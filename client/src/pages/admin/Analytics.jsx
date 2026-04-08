@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
+import { exportToCSV } from "../../utils/exportCSV";
 import {
   BarChart,
   Bar,
@@ -19,6 +20,7 @@ export default function Analytics() {
   const [studentCount, setStudentCount] = useState(0);
   const [avgMarks, setAvgMarks] = useState(0);
   const [chartData, setChartData] = useState([]);
+  const [allGrades, setAllGrades]=useState([]);
 
   useEffect(() => {
     if (!userData) return;
@@ -29,6 +31,7 @@ export default function Analytics() {
       setStudentCount(students.length);
 
       // Grades
+      
       const q = query(
         collection(db, "grades"),
         where("schoolId", "==", userData.schoolId)
@@ -42,6 +45,14 @@ export default function Analytics() {
 
       snapshot.forEach((doc) => {
         const data = doc.data();
+
+        let gradeList = [];
+
+        snapshot.forEach((doc) => {
+        const data = doc.data();
+        gradeList.push(data);
+        setAllGrades(gradeList);
+});
 
         const marks = Number(data.marks);
         total += marks;
@@ -103,6 +114,7 @@ export default function Analytics() {
           <Bar dataKey="average" />
         </BarChart>
       </div>
+      <button className="bg-green-500 text-white px-4 mb-4" onClick={() => exportToCSV(allGrades, "grades")}>Export Grades CSV</button>
     </Layout>
   );
 }
