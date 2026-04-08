@@ -8,7 +8,8 @@ import Students from "./pages/admin/Students";
 import AssignGrades from "./pages/teacher/AssignGrades";
 import ViewGrades from "./pages/student/ViewGrades";
 import ProtectedRoute from "./routes/ProtectedRoute";
-
+import Analytics from "./pages/admin/Analytics";
+import Notifications from "./pages/common/Notifications";
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +25,8 @@ function App() {
 
         <Route path="/student" element={<ProtectedRoute role="student"><StudentDashboard /></ProtectedRoute>} />
         <Route path="/student/grades" element={<ProtectedRoute role="student"><ViewGrades /></ProtectedRoute>} />
+        <Route path="/admin/analytics"element={<ProtectedRoute role="admin"><Analytics /></ProtectedRoute>}/>
+        <Route path="/notifications"element={<ProtectedRoute><Notifications /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

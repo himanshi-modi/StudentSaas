@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getStudents } from "../../services/studentService";
 import { addGrade } from "../../services/gradeService";
+import { createNotification } from "../../services/notificationService";
 import Layout from "../../components/Layout";
 
 export default function AssignGrades() {
@@ -19,16 +20,22 @@ export default function AssignGrades() {
   }, [userData]);
 
   const handleSubmit = async () => {
-    await addGrade({
-      studentId: selectedStudent,
-      subject,
-      marks,
-      teacherId: currentUser.uid,
-      schoolId: userData.schoolId
-    });
+  await addGrade({
+    studentId: selectedStudent,
+    subject,
+    marks,
+    teacherId: currentUser.uid,
+    schoolId: userData.schoolId
+  });
 
-    alert("Grade added");
-  };
+  // 🔔 Create Notification
+  await createNotification({
+    userId: selectedStudent,
+    message: `New grade added for ${subject}: ${marks}`
+  });
+
+  alert("Grade added & notification sent");
+};
 
   return (
     <Layout>
