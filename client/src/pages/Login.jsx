@@ -1,30 +1,30 @@
-import {useState } from "react";
-import {login} from "../services/authService";
+import { useState } from "react";
+import { login } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { userData } = useAuth();
+  const navigate = useNavigate();
 
-export default function Login(){
-    const [email, setEmail]=useState("");
-    const [password, setPassword]=useState("");
+  const handleLogin = async () => {
+    await login(email, password);
 
-    const handleLogin= async () =>{
-        try{
-            await login(email,password);
-            alert("Login successful");
-        }catch(err){
-            console.error(err);
-            alert("Login failed");
-        }
-    };
+    setTimeout(() => {
+      if (userData?.role === "admin") navigate("/admin");
+      if (userData?.role === "teacher") navigate("/teacher");
+      if (userData?.role === "student") navigate("/student");
+    }, 500);
+  };
 
-    return (
-        <div>
-            <h2>Login</h2>
-
-            <input type="email" placeholder="Email" onChange={(e)=>setEmail(e.target.value)}/>
-            
-            <input type="password"placeholder="Password" onChange={(e)=>setPassword(e.target.value)}/>
-            <button onClick={handleLogin}>Login</button>
-        </div>
-    );
-};
-
+  return (
+    <div>
+      <h2>Login</h2>
+      <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+      <input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={handleLogin}>Login</button>
+    </div>
+  );
+}
